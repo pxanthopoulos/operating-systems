@@ -1,0 +1,25 @@
+.PHONY: all clean
+
+all: ask2-pipe2 ask2-pipe
+
+CC = gcc
+CFLAGS = -g -Wall -O2
+SHELL= /bin/bash
+
+ask2-pipe: ask2-pipe.o proc-common.o tree.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+ask2-pipe2: ask2-pipe2.o proc-common.o tree.o
+	$(CC) $(CFLAGS) $^ -o $@
+
+%.s: %.c
+	$(CC) $(CFLAGS) -S -fverbose-asm $<
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $<
+
+%.i: %.c
+	gcc -Wall -E $< | indent -kr > $@
+
+clean: 
+	rm -f *.o tree-example fork-example pstree-this ask2-{fork,tree,signals,pipes}

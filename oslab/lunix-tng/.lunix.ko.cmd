@@ -1,0 +1,1 @@
+cmd_/home/user/shared/lunix-tng/lunix.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T arch/x86/module.lds -o /home/user/shared/lunix-tng/lunix.ko /home/user/shared/lunix-tng/lunix.o /home/user/shared/lunix-tng/lunix.mod.o;  true

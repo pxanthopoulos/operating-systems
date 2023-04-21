@@ -1,0 +1,68 @@
+0: strace, vlepw prospathei na anoiksei ena file .hello_there, to dhmiourgw me touch ... kai telos.
+
+1: strace, pali anoigei to .hello_there, apo to hint katalavainw oti exei na kanei me permissions.
+to anoigei me write only ara kanw chmod a-w kai telos.
+
+2: ltrace, vlepw orizei handlers gia SIGCONT kai SIGALRM, apo hint katalavainw oti exei na kanei me SIGCONT.
+to ektelw me & wste na vgalei to pid kai apo allo parathuro stelnw SIGCONT me kill -s 18 pid
+
+3: ltrace, vlepw kanei getenv(ANSWER), diladi pairnei thn timh tou environment variable ANSWER.
+apo hint katalavainw oti h timh pou psaxnei einai to 42, opote kanw export ANSWER=42
+
+episis kanw export I_NEED_TECH_HINTS=1 gia extra hints
+
+4: strace, anoigei to magic_mirror, apo hint katalavainw oti thelei ena fifo me onoma magic_mirror (mkfifo magic_mirror)
+episis fainetai gt grafei kai diavazei apo to idio fd, an den htan mirror, me to grapsimo tha metaferotan to offset kata 1 opote den tha borouse na diavasei meta auto pou egrapse
+
+5: strace, vlepw fcntl(99, 1, 0, 0) dhladh psaxnei ta flags tou fd = 99 opote apla ton anoigw kai ton stelnw sto /dev/null me exec 99<> /dev/null kai telos
+
+6: strace -ff gia na akolouthei kai ta paidia,
+vlepw oti grafei to 1o paidi sto fd=34, diavazei to deutero apo to 33
+meta grafei to 2o sto 54 kai diavazei to 1o apo to 53 kai ginetai ena bros pisw
+opote ftiaxnw 2 fifo, pipe1 pipe2 kai exec 33<>pipe1, exec 34<>pipe1, exec 53<>pipe2, exec 54<>pipe2 wste ta 33, 34 na epikoinwnoun mesw tou pipe1 kai ta 53,54 mesw tou pipe2
+
+7: strace -v gia verbose, vlepw oti kanei lstat 2 files, to .hello_there kai to .hey_there
+an den uparxei kapoio, apotugxanei. an uparxoun kai ta 2, sugkrinei to inode tous kai an den einai idio, apotugxanei
+2 arxeia exoun idio inode an to ena einai hard link tou allou 
+opote kanw ln .hello_there .hey_there wste to hey na einai hard link tou hello kai telos
+
+8: strace -v, vlepw oti prospathei na anoiksei to arxeio bf00. to dhmiourgw. ksana strace kai vlepw oti kanei lseek me SEEK_SET to arxeio sth thesh 1073741824
+auto shmainei oti metaferei to file offset sth thesh 1073741824. meta episis prospathei na diavasei 16 bytes
+opote dhmiourgw ena arxeio me onoma bf00, adeio mexri th thesh 1073741824 kai meta 16 bytes apo to /dev/random
+pali apotugxanei, ksana strace. prin ekane 10 prospatheies gia to bf00, twra kanei 9 prospatheies gia to bf01
+kanw to idio gia arxeio me onoma bf01, twra kanei 8 prospatheies gia to bf02
+opote dhmiourgw idia arxeia me onomata bf02, bf03, ..., bf09 kai telos
+
+9: strace -v gia verbose, vlepw kanei connect sto localhost, port 49842 opote apo allo parathuro akouw to localhost:49842
+mesw entolhs nc -l localhost 49842 kai apantaw sthn erwthsh.
+
+10: strace, vlepw grafei se ena arxeio (me O_CREAT | O_TRUNC) pou legetai secret_number thn apanthsh pou thelei
+alla meta kanei unlink wste na diagrafei to arxeio otan kleisei ton fd. omws h unlink den diagrafei to arxeio apla meiwnei to ref counter
+diagrafwntas to onoma apo to file system opote an dhmiourghsw ena hard link sto secret_number, borw na dw to zhtoumeno
+
+11: idio alla twra elegxei to nlink mesw tou fstat. h unlink omws den diarafei ta periexomena tou arxeiou an uparxei to arxeio anoixto, wspou oloi oi fd pou anaferontai se auto na kleisoun
+opote ftiaxnw programma pou anoigei to arxeio secret_number kai perimenei na diavasei 4096 bytes (osa grafei to riddle)
+afou kanei wait 5 sec wste to riddle na prolavei na grapsei, diavazei kai ta tupwnei
+prwta prepei touch secret_number wste na uparxei to arxeio, meta ektelw ./sol11 kai grigora to ./riddle wste na prolavei na grapsei prin perasoun ta 5 sec
+
+12: openat(AT_FDCWD, "/tmp/riddle-9ubNNP", O_RDWR|O_CREAT|O_EXCL, 0600) = 4
+    ftruncate(4, 4096)                      = 0
+    mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 4, 0) = 0x7f422bc76000
+    write(2, "I want to find the char 'K' at 0x7f422bc7606f\n", 46) = 46
+
+vlepw oti dhmiourgei arxeio me tuxaio onoma riddle-.... sto /tmp/ kai tou dinei xwro 4096 bytes
+mesw ths mmap to kanei map sthn mnhmh kai pairnei thn dieuthinsi 0x7f422bc76000
+meta mas zitaei ton xaraktira K (pali tuxaios) sthn dieuthinsi 0x7f422bc7606f, dhladh 111 bytes meta
+opote trexontas strace xwris arxeio output wste na ta petaei sto stdout thn wra pou ektelountai,
+pairnoume grigora to onoma arxeiou kai ton xaraktira
+to anoigoume se diko mas script, kanoume diko mas mmap kai sth thesi 111 tis dieuthinsis pou pirame, grafoume ton xaraktira pou prepei
+mesw tou map_shared, oi allages mas ginontai orates kai sto riddle efoson anaferontai sto idio arxeio
+
+13: strace, anoigei to arxeio, kanei ftruncate gia na to megalwsei se xwro kai meta to kanei mmap gia na to ferei sth mnhmh
+omws meta kanei ftruncate kai meiwnei sto miso to xwro tou arxeiou. ftruncate se ligotero xwro meta apo mmap borei na odigisei se SIGBUS an
+prospathisoume na kanoume access dieuthinseis pou antistoixousan ston xwro pou diagrapsame, opote upothetoume oti auto sumvainei
+script pou kanei execve to riddle kai perimenei 5 sec wste to riddle na zitisei input. tote kanei ftruncate to arxeio ksana sto arxiko megethos kai telos
+
+14: pstree -p | grep 32767 gia na doume an uparxei process me pid pou theloume. an nai to kanoume kill
+an oxi apla sudo echo 32766 > /proc/sys/kernel/ns_last_pid wste to epomeno pid pou tha dothei na einai auto pou theloume
+kateutheian kai grigora ekteloume to riddle kai voila

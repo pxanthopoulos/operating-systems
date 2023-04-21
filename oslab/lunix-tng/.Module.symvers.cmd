@@ -1,0 +1,1 @@
+cmd_/home/user/shared/lunix-tng/Module.symvers := sed 's/ko$$/o/' /home/user/shared/lunix-tng/modules.order | scripts/mod/modpost -m    -o /home/user/shared/lunix-tng/Module.symvers -e -i Module.symvers   -T -
